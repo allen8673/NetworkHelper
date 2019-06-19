@@ -33,14 +33,14 @@ using(HttpClient client = new HttpClient())
 源碼位置: https://github.com/allen8673/NetworkHelper.git
 安裝說明:
 - 1 打開`NetworkHelper.Module.sln`進行編譯
-![Step 1](Install_1.png )
-![Step 2](Install_2.png )
+![Step 1](Doc/Install_1.png )
+![Step 2](Doc/Install_2.png )
 
 - 2 將`NetworkHelper`編譯完成內容(通常在該專案資料夾中`bin`資料夾底下)加入至目標方案中
 - 3 開啟目標方案，將`NetworkHelper.dll`加入至指定專案即可
-![Step 3](Install_3.png )
+![Step 3](Doc/Install_3.png )
 
-## 5.Methods
+## 4.Methods
 
 `NetworkHelper`主要以`Connecter`物件作為功能介面。其中提供方法如下表:
 
@@ -53,7 +53,7 @@ using(HttpClient client = new HttpClient())
 |Upload|以Http Post上傳檔案|api: Api相對網址(不含Host url)<br> files:上傳檔案資訊<br> data: 傳送內容<br>failureAct: 指定錯誤發生時所要執行的動作<br>|
 |Download| 下載檔案| downloadSetting: 下載檔案設定|
 
-## 6.Sample
+## 5.Sample
 + Connecter設定Base url
 ```csharp
 Connecter.SetBaseUri(new Uri("your host url"));

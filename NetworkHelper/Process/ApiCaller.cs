@@ -15,7 +15,7 @@ namespace NetworkHelper.Process
     /// <summary>
     /// WebApi Caller
     /// </summary>
-    class ApiCaller
+    public class ApiCaller
     {
         /// <summary>
         /// Get/Past Data by Http Get

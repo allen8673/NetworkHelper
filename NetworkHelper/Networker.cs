@@ -22,7 +22,7 @@ namespace NetworkHelper
                 UriFetcher.BaseUri, api,
                 new RequestHeader
                 {
-                    token = TokenFetcher.Token
+                    token = await TokenFetcher.GetToken()
                 }, request);
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace NetworkHelper
                 UriFetcher.BaseUri, api,
                 new RequestHeader
                 {
-                    token = TokenFetcher.Token
+                    token = await TokenFetcher.GetToken()
                 });
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace NetworkHelper
                 UriFetcher.BaseUri, api,
                 new RequestHeader
                 {
-                    token = TokenFetcher.Token
+                    token = await TokenFetcher.GetToken()
                 }, request);
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace NetworkHelper
                 UriFetcher.BaseUri, api,
                 new RequestHeader
                 {
-                    token = TokenFetcher.Token
+                    token = await TokenFetcher.GetToken()
                 });
 
     }

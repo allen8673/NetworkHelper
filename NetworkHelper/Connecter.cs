@@ -23,6 +23,19 @@ namespace NetworkHelper
         //public static Action<Exception> ErrorLog { get; set; }
         private static object _locker = new { };
 
+        public static void SetBaseUri(Uri uri)
+        {
+            Global.Host = new Uri(uri.GetLeftPart(UriPartial.Authority));
+            Global.LocalPath = uri.LocalPath;
+        }
+
+        public static void SetToken(string token) => TokenFetcher.SetToken(token);
+        public static void RegisterCheckToken(Func<string, bool> method) => TokenFetcher.CheckToken = method;
+        public static void RegisterRefreshToken(Func<Task<string>> method) => TokenFetcher.RefreshToken = method;
+
+
+        public static string LocalPath => Global.LocalPath;
+
         #region The POST Methods
         /// <summary>
         /// 
@@ -91,7 +104,7 @@ namespace NetworkHelper
                     UriFetcher.BaseUri, api,
                     new RequestHeader
                     {
-                        token = TokenFetcher.Token
+                        token = await TokenFetcher.GetToken()
                     }, request);
                 string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 requestUrl.ResponseContent = content;
@@ -127,7 +140,7 @@ namespace NetworkHelper
                     UriFetcher.BaseUri, api,
                     new RequestHeader
                     {
-                        token = TokenFetcher.Token
+                        token = await TokenFetcher.GetToken()
                     }, request);
                 string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 requestUrl.ResponseContent = content;
@@ -166,7 +179,7 @@ namespace NetworkHelper
                     baseUri, api,
                     new RequestHeader
                     {
-                        token = TokenFetcher.Token
+                        token = await TokenFetcher.GetToken()
                     }, request);
                 string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 requestUrl.ResponseContent = content;
@@ -198,7 +211,7 @@ namespace NetworkHelper
                 HttpResponseMessage response = await ApiCaller.Get(UriFetcher.BaseUri, api,
                 new RequestHeader
                 {
-                    token = TokenFetcher.Token
+                    token = await TokenFetcher.GetToken()
                 });
                 string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
@@ -233,7 +246,7 @@ namespace NetworkHelper
                 HttpResponseMessage response = await ApiCaller.Get(baseUri, api,
                 new RequestHeader
                 {
-                    token = TokenFetcher.Token
+                    token = await TokenFetcher.GetToken()
                 });
                 string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
@@ -272,7 +285,7 @@ namespace NetworkHelper
                     UriFetcher.BaseUri, api,
                     new RequestHeader
                     {
-                        token = TokenFetcher.Token
+                        token = await TokenFetcher.GetToken()
                     }, request);
 
                 string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -312,7 +325,7 @@ namespace NetworkHelper
                     UriFetcher.BaseUri, api,
                     new RequestHeader
                     {
-                        token = TokenFetcher.Token
+                        token = await TokenFetcher.GetToken()
                     }, request);
 
                 string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -343,7 +356,7 @@ namespace NetworkHelper
                 HttpResponseMessage response = await ApiCaller.Delete(UriFetcher.BaseUri, api,
                 new RequestHeader
                 {
-                    token = TokenFetcher.Token
+                    token = await TokenFetcher.GetToken()
                 });
                 string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
@@ -377,7 +390,7 @@ namespace NetworkHelper
                 HttpResponseMessage response = await ApiCaller.Delete(UriFetcher.BaseUri, api,
                 new RequestHeader
                 {
-                    token = TokenFetcher.Token
+                    token = await TokenFetcher.GetToken()
                 });
                 return response.IsSuccessStatusCode;
             }
@@ -414,7 +427,7 @@ namespace NetworkHelper
                 UriFetcher.BaseUri, api,
                 new RequestHeader
                 {
-                    token = TokenFetcher.Token
+                    token = await TokenFetcher.GetToken()
                 }, form);
 
             string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -461,7 +474,7 @@ namespace NetworkHelper
                 UriFetcher.BaseUri, api,
                 new RequestHeader
                 {
-                    token = TokenFetcher.Token
+                    token = await TokenFetcher.GetToken()
                 }, form, false);
 
                 string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -479,10 +492,10 @@ namespace NetworkHelper
             await _Client.DownloadFileTaskAsync(downloadSetting.DownloadUri, downloadSetting.DownloadPath);
         }
 
-        public static bool GetToken()
-        {
-            return TokenFetcher.FetchToken();
-        }
+        //public static bool GetToken()
+        //{
+        //    return TokenFetcher.FetchToken();
+        //}
 
         //public class Promise
         //{

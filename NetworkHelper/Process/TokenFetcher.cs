@@ -15,28 +15,50 @@ namespace NetworkHelper.Process
 {
     public class TokenFetcher
     {
-        public static string Token
+        public const string TokenErrorMsg = "Fresh token failure";
+        internal static Func<string, bool> CheckToken { get; set; } = new Func<string, bool>((token) => true);
+        internal static Func<Task<string>> RefreshToken { get; set; } = new Func<Task<string>>(async () => Global.Token);
+        public static async Task<string> GetToken()
         {
-            get
+            if (!string.IsNullOrEmpty(Global.Token) && !CheckToken(Global.Token))
             {
-                if (string.IsNullOrEmpty(_token)) FetchToken();
-                return _token;
-            }
-        }
-        private static string _token;
+                ClearToken();
+                Global.Token = await RefreshToken();
 
-        public static bool FetchToken()
-        {
-            try
-            {
-                _token = string.IsNullOrEmpty(Global.Token) ? null : Global.Token;
+                if (string.IsNullOrEmpty(Global.Token))
+                {
+                    throw new Exception(TokenErrorMsg);
+                }
             }
-            catch (Exception ex)
-            {
-                return false;
-            }
-            return true;
+            return Global.Token;
         }
+
+        public static void SetToken(string token) => Global.Token = token;
+
+        public static void ClearToken() => Global.Token = null;
+
+        //public static string Token
+        //{
+        //    get
+        //    {
+        //        if (string.IsNullOrEmpty(_token)) FetchToken();
+        //        return _token;
+        //    }
+        //}
+        //private static string _token;
+
+        //public static bool FetchToken()
+        //{
+        //    try
+        //    {
+        //        _token = string.IsNullOrEmpty(Global.Token) ? null : Global.Token;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return false;
+        //    }
+        //    return true;
+        //}
     }
 
 

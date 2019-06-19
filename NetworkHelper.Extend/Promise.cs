@@ -1,7 +1,11 @@
 ﻿using NetworkHelper.Extend.Model;
+using NetworkHelper.Model;
+using NetworkHelper.Process;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,11 +20,18 @@ namespace NetworkHelper.Extend
         /// <param name="api">Post api url</param>
         /// <param name="request">Request content</param>
         /// <returns></returns>
-        public async static Task<PromiseResponse<TRsp>> PostJson<TRsp>(string api, object request)
+        public async static Task<PromiseResponse<TRsp>> PostJson<TRsp>(string api, object request, params object[] jPath)
         {
             try
             {
-                return await Networker.PostAsJson(api, request);
+                PromiseResponse<TRsp> response = await ApiCaller.PostAsJson(
+                        UriFetcher.BaseUri, api,
+                        new RequestHeader
+                        {
+                            token = await TokenFetcher.GetToken()
+                        }, request);
+
+                return response % jPath;
             }
             catch (Exception ex)
             {
@@ -41,7 +52,11 @@ namespace NetworkHelper.Extend
             PromiseResponse<TRsp> response;
             try
             {
-                response = await Networker.Get(api);
+                response = await ApiCaller.Get(UriFetcher.BaseUri, api,
+                    new RequestHeader
+                    {
+                        token = await TokenFetcher.GetToken()
+                    });
                 return response % jPath;
             }
             catch (Exception ex)
@@ -63,7 +78,13 @@ namespace NetworkHelper.Extend
         {
             try
             {
-                return await Networker.PutAsJson(api, request);
+                return await ApiCaller.PutAsJson(
+                        UriFetcher.BaseUri, api,
+                        new RequestHeader
+                        {
+                            token = await TokenFetcher.GetToken()
+                        }, request);
+
             }
             catch (Exception ex)
             {
@@ -83,12 +104,55 @@ namespace NetworkHelper.Extend
             PromiseResponse response;
             try
             {
-                response = await Networker.Delete(api);
+                response = await ApiCaller.Delete(UriFetcher.BaseUri, api,
+                    new RequestHeader
+                    {
+                        token = await TokenFetcher.GetToken()
+                    });
                 return response;
             }
             catch (Exception ex)
             {
                 NetworkLog.ErrorLog?.Invoke(ex);
+                throw new Exception("Please check the Network status!");
+            }
+        }
+
+        public async static Task<PromiseResponse<TRsp>> Upload<TRsp>(string api, IEnumerable<NetworkHelper.Model.FileInfo> files, object data)
+        {
+
+            if (files == null)
+                throw new Exception("File list is demanded");
+            //HttpContent scontent;
+            MultipartFormDataContent form = new MultipartFormDataContent();
+
+
+            object value;
+            foreach (var prop in data.GetType().GetProperties())
+            {
+                value = prop.GetValue(data);
+                if (value == null)
+                    continue;
+                form.Add(new StringContent(value.ToString()), prop.Name);
+            }
+
+            foreach (NetworkHelper.Model.FileInfo item in files)
+            {
+                byte[] img_data = System.IO.File.ReadAllBytes(item.Path);
+                form.Add(new StreamContent(new MemoryStream(img_data)), "file", item.FileName);
+                form.Add(new StringContent(item.FileName), "filename");
+            }
+
+
+            try
+            {
+                return await ApiCaller.Post(UriFetcher.BaseUri, api, new RequestHeader
+                {
+                    token = await TokenFetcher.GetToken()
+                }, form, false);
+            }
+            catch (Exception ex)
+            {
                 throw new Exception("Please check the Network status!");
             }
         }

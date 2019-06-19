@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace NetworkHelper.Process
 {
-    static class UriFetcher
+    public static class UriFetcher
     {
         public static Uri BaseUri => Global.Host;
     }

@@ -12,16 +12,20 @@ namespace NetworkHelper.Test
     {
         public NetworkHelperTest()
         {
-            Global.Host = new Uri("http://140.110.141.72:3003");
+            Connecter.SetBaseUri(new Uri("http://140.110.141.72:3003"));
+            Connecter.SetToken("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJvY2MiLCJ1c2VyX2lkIjoxMDMsInJvbGVfaWQiOjEsIm9yZ2FuaXphdGlvbl9pZCI6MTA1LCJvcmdhbml6YXRpb25fbmFtZSI6Im9jY2JhY2tlbmQiLCJvcmdhbml6YXRpb25fZW1haWwiOiJvY2NiYWNrZW5kQGdtYWlsLmNvbSIsIm9yZ2FuaXphdGlvbl9jaXRpZXMiOlt7ImNpdHlfaWQiOjF9LHsiY2l0eV9pZCI6Mn0seyJjaXR5X2lkIjozfV0sImlhdCI6MTU2MDkzMzY5NiwiZXhwIjoxNTYwOTM3Mjk2fQ.zTVSQGoqtlkPBMmUMJspI9d_uzgeZjJlJ3e4fAYmmUA");
             Global.LocalPath = "dev";
-            Global.Token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJvY2MiLCJ1c2VyX2lkIjoxMDMsInJvbGVfaWQiOjEsIm9yZ2FuaXphdGlvbl9pZCI6MTA1LCJvcmdhbml6YXRpb25fbmFtZSI6Im9jY2JhY2tlbmQiLCJvcmdhbml6YXRpb25fZW1haWwiOiJvY2NiYWNrZW5kQGdtYWlsLmNvbSIsIm9yZ2FuaXphdGlvbl9jaXRpZXMiOlt7ImNpdHlfaWQiOjF9LHsiY2l0eV9pZCI6Mn0seyJjaXR5X2lkIjozfV0sImlhdCI6MTU2MDkzMzY5NiwiZXhwIjoxNTYwOTM3Mjk2fQ.zTVSQGoqtlkPBMmUMJspI9d_uzgeZjJlJ3e4fAYmmUA";
         }
 
         [TestMethod]
         public void SuccessConnecterGet()
         {
             string msg = "";
-            List<City> result = Connecter.Get<List<City>>($"{Global.LocalPath}/api/v1/lists/cities", null, "City").Result;
+            List<City> result = Connecter.Get<List<City>>($"{Global.LocalPath}/api/v1/lists/cities", (resp)=> 
+            {
+                Console.WriteLine(resp.StatusCode);
+                return new List<City>();
+            }).Result;
 
             Assert.IsTrue(result.Count > 0);
         }

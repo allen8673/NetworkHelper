@@ -443,9 +443,9 @@ namespace NetworkHelper
         /// <param name="api">Upload Api url</param>
         /// <param name="files">Upload file list</param>
         /// <returns></returns>
-        public async static Task<TRsp> Upload<TReq, TRsp>(string api,
+        public async static Task<TRsp> Upload<TRsp>(string api,
             IEnumerable<Model.FileInfo> files,
-            TReq data,
+            object data,
             Func<HttpResponseMessage, TRsp> failureAct = null)
         {
 

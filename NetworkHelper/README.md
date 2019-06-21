@@ -27,10 +27,10 @@ using(HttpClient client = new HttpClient())
 為了簡化上述程式，讓使用者可以更方便的處理Api的連接，以及將`Json Object`轉換為指定型態的物件，因此提出`NetworkHelp`，整合`dotNet HttpClient`以及套件`Newtonsoft.Json`，並將其簡化為簡單的方法供使用者使用，以簡潔程式，避免過多冗長的程式重複出現而造成系統難以維護。
 
 ## 3.Environment & Installation
-適用語言：C#
-適用框架：.Net Framework 4.6.1 以上(含)
-建議開發工具：Visual Studio 2015 以上(含)
-源碼位置：https://github.com/allen8673/NetworkHelper.git
+適用語言：C#  
+適用框架：.Net Framework 4.6.1 以上(含)  
+建議開發工具：Visual Studio 2015 以上(含)  
+源碼位置：https://github.com/allen8673/NetworkHelper.git  
 安裝說明：
 - 1 打開`NetworkHelper.Module.sln`進行編譯
 ![Step 1](Doc/Install_1.png )

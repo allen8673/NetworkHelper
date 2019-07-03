@@ -50,7 +50,7 @@ using(HttpClient client = new HttpClient())
 |Post|以Http Post連接Api，並傳送內容以取得資訊|baseUri: Host url網址<br>api: Api相對網址(不含Host url)<br> mediaType: 傳送資訊型態(xaml, jason等....)<br> requestHeader:傳送時Header的內容 <br/> failureAct: 指定錯誤發生時所要執行的動作<br>|
 |PostJson|以Http Post連接Api，並以Json傳送內容以取得資訊|baseUri: Host url網址<br>api: Api相對網址(不含Host url)<br>request: 任意傳送內容<br> failureAct: 指定錯誤發生時所要執行的動作<br>|
 |Put|以Http Put連接Api，並傳送內容以取得內容|api: Api相對網址(不含Host url)<br>request: 任意傳送內容<br> failureAct: 指定錯誤發生時所要執行的動作<br>|
-|Delete|以Http Delete連接Api，並且傳送內容||
+|Delete|以Http Delete連接Api，並且傳送內容|api: Api相對網址(不含Host url)<br>|
 |Upload|以Http Post上傳檔案|api: Api相對網址(不含Host url)<br> files:上傳檔案資訊<br> data: 傳送內容<br>failureAct: 指定錯誤發生時所要執行的動作<br>|
 |Download| 下載檔案| downloadSetting: 下載檔案設定|
 

@@ -27,4 +27,104 @@
 |Put|以Http Put連接Api，並傳送內容以取得內容|api: Api相對網址(不含Host url)<br>request: 任意傳送內容<br>|
 |Delete|以Http Delete連接Api，並且傳送內容|api: Api相對網址(不含Host url)<br>|
 |Upload|以Http Post上傳檔案|api: Api相對網址(不含Host url)<br> files:上傳檔案資訊<br> data: 傳送內容<br>|
-||||
+|IfSuccess|注入當Api回應成功時應該執行的動作|response: 注入行為的的目標HTTP Response<br>act: Api回應成功時所需執行的動作<br>|
+|IfFailure|注入當Api回應失敗時應該執行的動作|response: 注入行為的的目標HTTP Response<br>act: Api回應失敗時所需執行的動作<br>|
+|IfTimeOut|注入當Api回應Timeout時應該執行的動作|response: 注入行為的的目標HTTP Response<br>act: Api回應Timeout時所需執行的動作<br>|
+|GetStatusCode|取得Api回應的Http Status Code|response: 取得Http Status Code的目標HTTP Response|
+
+## Sample
++ Promise.Get
+
+傳入`Api Url`參數至`Get`方法，取得Json object；同時分別注入成功、失敗、及Timeout時所需要執行的動作。
+```csharp
+Model model = await Promise.Get<Model>("Sample/GetModel")
+                           .IfSuccess((md)=>
+                           {
+                               Console.WriteLine("Success Get Model md");
+                               // do something about success with Model md
+                           })
+                           .IfFailure((resp)=>
+                           {
+                               Console.WriteLine("Get failure Response resp");
+                               // do something about failure with Response resp
+                           })
+                           .IfTimeOut(()=> 
+                           {
+                               Console.WriteLine("Get failure Response resp");
+                               // do something about timeout 
+                           });
+```
+
++ Promise.PostJson
+
+傳入`Api Url`參數至`PostJson`方法，取得Json object；同時分別注入成功、失敗、及Timeout時所需要執行的動作。
+```csharp
+Model model = await Promise.PostJson<Model>("Sample/PostModel", new
+{
+    Property_1 = 1,
+    Property_2 = "demo"
+})
+.IfSuccess((md) =>
+{
+    Console.WriteLine("Success Get Model md");
+    // do something about success with Model md
+})
+.IfFailure((resp) =>
+{
+    Console.WriteLine("Get failure Response resp");
+    // do something about failure with Response resp
+})
+.IfTimeOut(() =>
+{
+    Console.WriteLine("Get failure Response resp");
+    // do something about timeout 
+});
+```
+
++ Promise.Put
+
+傳入`Api Url`參數至`Put`方法，取得Json object；同時分別注入成功、失敗、及Timeout時所需要執行的動作。
+```csharp
+Model model = await Promise.Put<Model>("Sample/GetModel", new
+{
+    Property_1 = 1,
+    Property_2 = "demo"
+})
+.IfSuccess((md) =>
+{
+    Console.WriteLine("Success Get Model md");
+    // do something about success with Model md
+})
+.IfFailure((resp) =>
+{
+    Console.WriteLine("Get failure Response resp");
+    // do something about failure with Response resp
+})
+.IfTimeOut(() =>
+{
+    Console.WriteLine("Get failure Response resp");
+    // do something about timeout 
+});
+```
+
++ Promise.Delete
+
+傳入`Api Url`參數至`Delete`方法；同時分別注入成功、失敗、及Timeout時所需要執行的動作。
+```csharp
+await Promise.Delete("Sample/GetModel")
+             .IfSuccess(() =>
+             {
+                 Console.WriteLine("Success Get Model md");
+                 // do something about success with Model md
+             })
+             .IfFailure((resp) =>
+             {
+                 Console.WriteLine("Get failure Response resp");
+                 // do something about failure with Response resp
+             })
+             .IfTimeOut(() =>
+             {
+                 Console.WriteLine("Get failure Response resp");
+                 // do something about timeout 
+             });
+```

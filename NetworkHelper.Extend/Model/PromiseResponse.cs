@@ -79,17 +79,18 @@ namespace NetworkHelper.Extend.Model
             }
 
             string content = response.HttpResponse.Content.ReadAsStringAsync().Result;
-            if (response.ParserJPath?.Count() == 0)
-            {
-                return JsonConvert.DeserializeObject<T>(content);
-            }
+            return Connecter.ParseJPath<T>(content, response.ParserJPath);
+            //if (response.ParserJPath?.Count() == 0)
+            //{
+            //    return JsonConvert.DeserializeObject<T>(content);
+            //}
 
-            JToken jobject = JObject.Parse(content);
-            foreach (object jpath in response.ParserJPath)
-            {
-                jobject = jobject[jpath];
-            }
-            return jobject.ToObject<T>();
+            //JToken jobject = JObject.Parse(content);
+            //foreach (object jpath in response.ParserJPath)
+            //{
+            //    jobject = jobject[jpath];
+            //}
+            //return jobject.ToObject<T>();
         }
 
         public static implicit operator PromiseResponse<T>(HttpResponseMessage httpResponse) => new PromiseResponse<T>(httpResponse);

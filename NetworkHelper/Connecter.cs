@@ -51,7 +51,8 @@ namespace NetworkHelper
             MediaTypeWithQualityHeaderValue mediaType,
             RequestHeader requestHeader,
             HttpContent httpContent,
-            Func<HttpResponseMessage, TRsp> failureAct = null)
+            Func<HttpResponseMessage, TRsp> failureAct = null,
+            params object[] jPath)
         {
             HttpResponseMessage response = await ApiCaller.Post(
            baseUri, api,
@@ -61,7 +62,8 @@ namespace NetworkHelper
             string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
                 return failureAct(response);
-            return JsonConvert.DeserializeObject<TRsp>(content);
+            return ParseJPath<TRsp>(content, jPath);
+            //return JsonConvert.DeserializeObject<TRsp>(content);
         }
 
         /// <summary>
@@ -78,10 +80,11 @@ namespace NetworkHelper
             MediaTypeWithQualityHeaderValue mediaType,
             RequestHeader requestHeader,
             HttpContent httpContent,
-            Func<HttpResponseMessage, TRsp> failureAct = null)
+            Func<HttpResponseMessage, TRsp> failureAct = null,
+            params object[] jPath)
         {
 
-            return Post<TRsp>(Global.Host, api, mediaType, requestHeader, httpContent, failureAct).Result;
+            return Post<TRsp>(Global.Host, api, mediaType, requestHeader, httpContent, failureAct, jPath).Result;
         }
 
         /// <summary>
@@ -126,7 +129,7 @@ namespace NetworkHelper
         /// <param name="api">Post api url</param>
         /// <param name="request">Request content</param>
         /// <returns></returns>
-        public async static Task<TRsp> PostJson<TRsp>(string api, object request, Func<HttpResponseMessage, TRsp> failureAct = null)
+        public async static Task<TRsp> PostJson<TRsp>(string api, object request, Func<HttpResponseMessage, TRsp> failureAct = null, params object[] jPath)
         {
             RequestInfo requestUrl = new RequestInfo
             {
@@ -148,7 +151,8 @@ namespace NetworkHelper
                 NetworkLog.ResponseLog?.Invoke(requestUrl);
                 if (!response.IsSuccessStatusCode)
                     return ( failureAct ?? new Func<HttpResponseMessage, TRsp>((rsp) => default(TRsp)) )(response);
-                return JsonConvert.DeserializeObject<TRsp>(content);
+                return ParseJPath<TRsp>(content, jPath);
+                //return JsonConvert.DeserializeObject<TRsp>(content);
             }
             catch (Exception ex)
             {
@@ -165,7 +169,7 @@ namespace NetworkHelper
         /// <param name="api">Post api url</param>
         /// <param name="request">Request content</param>
         /// <returns></returns>
-        public async static Task<TRsp> PostJson<TRsp>(Uri baseUri, string api, object request, Func<HttpResponseMessage, TRsp> failureAct = null)
+        public async static Task<TRsp> PostJson<TRsp>(Uri baseUri, string api, object request, Func<HttpResponseMessage, TRsp> failureAct = null, params object[] jPath)
         {
             RequestInfo requestUrl = new RequestInfo
             {
@@ -187,7 +191,8 @@ namespace NetworkHelper
                 NetworkLog.ResponseLog?.Invoke(requestUrl);
                 if (!response.IsSuccessStatusCode)
                     return ( failureAct ?? new Func<HttpResponseMessage, TRsp>((rsp) => default(TRsp)) )(response);
-                return JsonConvert.DeserializeObject<TRsp>(content);
+                return ParseJPath<TRsp>(content, jPath);
+                //return JsonConvert.DeserializeObject<TRsp>(content);
             }
             catch (Exception ex)
             {
@@ -216,14 +221,16 @@ namespace NetworkHelper
                 string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
                     return ( failureAct ?? new Func<HttpResponseMessage, TRsp>((rsp) => default(TRsp)) )(response);
-                if (jPath.Count() == 0)
-                    return JsonConvert.DeserializeObject<TRsp>(content);
-                JToken jobject = JObject.Parse(content);
-                foreach (object jpath in jPath)
-                {
-                    jobject = jobject[jpath];
-                }
-                return jobject.ToObject<TRsp>();
+
+                return ParseJPath<TRsp>(content, jPath);
+                //if (jPath.Count() == 0)
+                //    return JsonConvert.DeserializeObject<TRsp>(content);
+                //JToken jobject = JObject.Parse(content);
+                //foreach (object jpath in jPath)
+                //{
+                //    jobject = jobject[jpath];
+                //}
+                //return jobject.ToObject<TRsp>();
             }
             catch (Exception ex)
             {
@@ -239,7 +246,7 @@ namespace NetworkHelper
         /// <param name="baseUri">Base uri</param>
         /// <param name="api">Get api</param>
         /// <returns></returns>
-        public async static Task<TRsp> Get<TRsp>(Uri baseUri, string api, Func<HttpResponseMessage, TRsp> failureAct = null)
+        public async static Task<TRsp> Get<TRsp>(Uri baseUri, string api, Func<HttpResponseMessage, TRsp> failureAct = null, params object[] jPath)
         {
             try
             {
@@ -250,8 +257,10 @@ namespace NetworkHelper
                 });
                 string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
-                    return failureAct(response);
-                return JsonConvert.DeserializeObject<TRsp>(content);
+                    return ( failureAct ?? new Func<HttpResponseMessage, TRsp>((rsp) => default(TRsp)) )(response);
+
+                return ParseJPath<TRsp>(content, jPath);
+                //return JsonConvert.DeserializeObject<TRsp>(content);
             }
             catch (Exception ex)
             {
@@ -259,6 +268,9 @@ namespace NetworkHelper
                 throw new Exception("Please check the Network status!");
             }
         }
+
+        
+
         #endregion
 
         #region The PUT Methods
@@ -270,7 +282,7 @@ namespace NetworkHelper
         /// <param name="request">Request content</param>
         /// <param name="failureAct">Failure callback</param>
         /// <returns></returns>
-        public async static Task<TRsp> Put<TRsp>(string api, object request, Func<HttpResponseMessage, TRsp> failureAct = null)
+        public async static Task<TRsp> Put<TRsp>(string api, object request, Func<HttpResponseMessage, TRsp> failureAct = null, params object[] jPath)
         {
             RequestInfo requestUrl = new RequestInfo
             {
@@ -294,7 +306,9 @@ namespace NetworkHelper
                 NetworkLog.ResponseLog?.Invoke(requestUrl);
                 if (!response.IsSuccessStatusCode)
                     return ( failureAct ?? new Func<HttpResponseMessage, TRsp>((rsp) => default(TRsp)) )(response);
-                return JsonConvert.DeserializeObject<TRsp>(content);
+
+                return ParseJPath<TRsp>(content, jPath);
+                //return JsonConvert.DeserializeObject<TRsp>(content);
             }
             catch (Exception ex)
             {
@@ -361,14 +375,15 @@ namespace NetworkHelper
                 string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
                     return ( failureAct ?? new Func<HttpResponseMessage, TRsp>((rsp) => default(TRsp)) )(response);
-                if (jPath.Count() == 0)
-                    return JsonConvert.DeserializeObject<TRsp>(content);
-                JToken jobject = JObject.Parse(content);
-                foreach (object jpath in jPath)
-                {
-                    jobject = jobject[jpath];
-                }
-                return jobject.ToObject<TRsp>();
+                return ParseJPath<TRsp>(content, jPath);
+                //if (jPath.Count() == 0)
+                //    return JsonConvert.DeserializeObject<TRsp>(content);
+                //JToken jobject = JObject.Parse(content);
+                //foreach (object jpath in jPath)
+                //{
+                //    jobject = jobject[jpath];
+                //}
+                //return jobject.ToObject<TRsp>();
             }
             catch (Exception ex)
             {
@@ -408,7 +423,7 @@ namespace NetworkHelper
         /// <param name="api">Upload Api url</param>
         /// <param name="files">Upload file list</param>
         /// <returns></returns>
-        public async static Task<TRsp> Upload<TRsp>(string api, IEnumerable<Model.FileInfo> files, Func<HttpResponseMessage, TRsp> failureAct = null)
+        public async static Task<TRsp> Upload<TRsp>(string api, IEnumerable<Model.FileInfo> files, Func<HttpResponseMessage, TRsp> failureAct = null, params object[] jPath)
         {
             if (files == null)
                 throw new Exception("File list is demanded");
@@ -432,8 +447,11 @@ namespace NetworkHelper
 
             string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
-                return failureAct(response);
-            return JsonConvert.DeserializeObject<TRsp>(content);
+                return (failureAct ?? new Func<HttpResponseMessage, TRsp>((rsp) => default(TRsp)))(response);
+            return ParseJPath<TRsp>(content, jPath);
+            //if (!response.IsSuccessStatusCode)
+            //    return failureAct(response);
+            //return JsonConvert.DeserializeObject<TRsp>(content);
         }
 
         /// <summary>
@@ -446,7 +464,8 @@ namespace NetworkHelper
         public async static Task<TRsp> Upload<TRsp>(string api,
             IEnumerable<Model.FileInfo> files,
             object data,
-            Func<HttpResponseMessage, TRsp> failureAct = null)
+            Func<HttpResponseMessage, TRsp> failureAct = null,
+            params object[] jPath)
         {
 
             if (files == null)
@@ -479,8 +498,11 @@ namespace NetworkHelper
 
                 string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
-                    return failureAct(response);
-                return JsonConvert.DeserializeObject<TRsp>(content);
+                    return (failureAct ?? new Func<HttpResponseMessage, TRsp>((rsp) => default(TRsp)))(response);
+                return ParseJPath<TRsp>(content, jPath);
+                //if (!response.IsSuccessStatusCode)
+                //    return failureAct(response);
+                //return JsonConvert.DeserializeObject<TRsp>(content);
             }
         }
 
@@ -490,6 +512,25 @@ namespace NetworkHelper
             _Client.DownloadProgressChanged += downloadSetting.DownloadProgressChanged;
             _Client.DownloadFileCompleted += downloadSetting.DownloadFileCompleted;
             await _Client.DownloadFileTaskAsync(downloadSetting.DownloadUri, downloadSetting.DownloadPath);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TRsp"></typeparam>
+        /// <param name="content"></param>
+        /// <param name="jPath"></param>
+        /// <returns></returns>
+        public static TRsp ParseJPath<TRsp>(string content, params object[] jPath)
+        {
+            if (jPath.Count() == 0)
+                return JsonConvert.DeserializeObject<TRsp>(content);
+            JToken jobject = JObject.Parse(content);
+            foreach (object jpath in jPath)
+            {
+                jobject = jobject[jpath];
+            }
+            return jobject.ToObject<TRsp>();
         }
 
         //public static bool GetToken()

@@ -22,11 +22,11 @@
 
 |方法|說明|參數說明|
 |:-|:-|:-|
-|Get|以Http Get連接Api，並取得資訊|api: Api相對網址(不含Host url)<br>|
-|PostJson|以Http Post連接Api，並以Json傳送內容以取得資訊|api: Api相對網址(不含Host url)<br>request: 任意傳送內容<br>|
-|Put|以Http Put連接Api，並傳送內容以取得內容|api: Api相對網址(不含Host url)<br>request: 任意傳送內容<br>|
+|Get|以Http Get連接Api，並取得資訊|api: Api相對網址(不含Host url)<br> jPath: 傳入JSON Property, JSON Object將由指定的Property反序列化為物件<br>|
+|PostJson|以Http Post連接Api，並以Json傳送內容以取得資訊|api: Api相對網址(不含Host url)<br>request: 任意傳送內容<br> jPath: 傳入JSON Property, JSON Object將由指定的Property反序列化為物件<br>|
+|Put|以Http Put連接Api，並傳送內容以取得內容|api: Api相對網址(不含Host url)<br>request: 任意傳送內容<br> jPath: 傳入JSON Property, JSON Object將由指定的Property反序列化為物件<br>|
 |Delete|以Http Delete連接Api，並且傳送內容|api: Api相對網址(不含Host url)<br>|
-|Upload|以Http Post上傳檔案|api: Api相對網址(不含Host url)<br> files:上傳檔案資訊<br> data: 傳送內容<br>|
+|Upload|以Http Post上傳檔案|api: Api相對網址(不含Host url)<br> files:上傳檔案資訊<br> data: 傳送內容<br> jPath: 傳入JSON Property, JSON Object將由指定的Property反序列化為物件<br>|
 |IfSuccess|注入當Api回應成功時應該執行的動作|response: 注入行為的的目標HTTP Response<br>act: Api回應成功時所需執行的動作<br>|
 |IfFailure|注入當Api回應失敗時應該執行的動作|response: 注入行為的的目標HTTP Response<br>act: Api回應失敗時所需執行的動作<br>|
 |IfTimeOut|注入當Api回應Timeout時應該執行的動作|response: 注入行為的的目標HTTP Response<br>act: Api回應Timeout時所需執行的動作<br>|

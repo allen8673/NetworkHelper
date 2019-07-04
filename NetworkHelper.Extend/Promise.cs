@@ -74,16 +74,18 @@ namespace NetworkHelper.Extend
         /// <param name="request">Request content</param>
         /// <param name="failureAct">Failure callback</param>
         /// <returns></returns>
-        public async static Task<PromiseResponse<TRsp>> Put<TRsp>(string api, object request)
+        public async static Task<PromiseResponse<TRsp>> Put<TRsp>(string api, object request, params object[] jPath)
         {
+            PromiseResponse<TRsp> response;
             try
             {
-                return await ApiCaller.PutAsJson(
+                response = await ApiCaller.PutAsJson(
                         UriFetcher.BaseUri, api,
                         new RequestHeader
                         {
                             token = await TokenFetcher.GetToken()
                         }, request);
+                return response % jPath;
 
             }
             catch (Exception ex)
@@ -118,7 +120,7 @@ namespace NetworkHelper.Extend
             }
         }
 
-        public async static Task<PromiseResponse<TRsp>> Upload<TRsp>(string api, IEnumerable<NetworkHelper.Model.FileInfo> files, object data)
+        public async static Task<PromiseResponse<TRsp>> Upload<TRsp>(string api, IEnumerable<NetworkHelper.Model.FileInfo> files, object data, params object[] jPath)
         {
 
             if (files == null)
@@ -144,12 +146,14 @@ namespace NetworkHelper.Extend
             }
 
 
+            PromiseResponse<TRsp> response;
             try
             {
-                return await ApiCaller.Post(UriFetcher.BaseUri, api, new RequestHeader
+                response = await ApiCaller.Post(UriFetcher.BaseUri, api, new RequestHeader
                 {
                     token = await TokenFetcher.GetToken()
                 }, form, false);
+                return response % jPath;
             }
             catch (Exception ex)
             {

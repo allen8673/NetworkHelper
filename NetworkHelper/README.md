@@ -228,15 +228,15 @@ await Connecter.Download(new DownloadSetting
 於 [Methods](#methods)中說明部分方法可以傳入參數`jPath`，並且說明`jPath`為指定的JSON Property，可以令JSON Object將由指定的Property反序列化為物件。以下說明。
 ```json
 {
-    ID:'123',
-    Data:
+    "ID":"123",
+    "Data":
     {
-        UUID:'XXXX-XXXXX-XXXXX',
-        Info:
+        "UUID":"XXXX-XXXXX-XXXXX",
+        "Info":
         {
-            Name:'Person',
-            Age:26,
-            Phone:'0912-345-678',
+            "Name":"Person",
+            "Age":26,
+            "Phone":"0912-345-678",
             ...
         },        
         ...

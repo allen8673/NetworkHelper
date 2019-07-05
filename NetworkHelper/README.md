@@ -223,3 +223,34 @@ await Connecter.Download(new DownloadSetting
 ```
 
 
+## About Parameter `jPath` 
+
+於 [Methods](#methods)中說明部分方法可以傳入參數`jPath`，並且說明`jPath`為指定的JSON Property，可以令JSON Object將由指定的Property反序列化為物件。以下說明。
+```json
+{
+    ID:'123',
+    Data:
+    {
+        UUID:'XXXX-XXXXX-XXXXX',
+        Info:
+        {
+            Name:'Person',
+            Age:26,
+            Phone:'0912-345-678',
+            ...
+        },        
+        ...
+    }
+}
+```
+假設Api回傳的JSON Object如上，但是Client端所需要的Model結構如下:
+```csharp
+class Model
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+    public string Phone { get; set; }
+    ...
+}
+```
+如上述情境，使用者可以參數`jPath`指定JSON Object可以從Property `Info`反序列化，以取得所需要的資料。
